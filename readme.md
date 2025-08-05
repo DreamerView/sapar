@@ -10,6 +10,8 @@
 ![Repo Size](https://img.shields.io/github/repo-size/DreamerView/sapar)
 ![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20macOS%20%7C%20Linux-blue)
 
+![Логотип](public/promo.png)
+
 ---
 
 ## 🚀 Features
