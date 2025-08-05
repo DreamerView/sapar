@@ -2,7 +2,7 @@
   "name": "sapar",
   "version": "1.0.0",
   "description": "",
-  "license": "ISC",
+  "license": "MIT",
   "author": "Temirkhan Rustemov",
   "type": "commonjs",
   "main": "start.js",
@@ -10,7 +10,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon .",
     "server": "node .",
-    "start": "chcp 65001 > nul && electron ."
+    "start": "chcp 65001 > nul && electron .",
+    "build:win": "electron-builder --win",
+    "build:portable": "electron-builder --win portable"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -26,6 +28,34 @@
   },
   "devDependencies": {
     "electron": "^37.2.4",
+    "electron-builder": "^26.0.12",
     "nodemon": "^3.1.10"
+  },
+  "build": {
+    "appId": "com.temirkhan.saparmini",
+    "productName": "Sapar Mini",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "backend/**/*",
+      "public/**/*",
+      "views/**/*",
+      "app.js",
+      "discover.js",
+      "start.js",
+      "test.js",
+      "package.json",
+      "!**/*.md",
+      "!**/*.log"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }
