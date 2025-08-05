@@ -37,6 +37,20 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Prepare installers only
+        run: |
+          mkdir upload
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            cp dist/*.exe upload/win-installer.exe 2>/dev/null || true
+            cp dist/*.msi upload/win-installer.msi 2>/dev/null || true
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            cp dist/*.dmg upload/mac-installer.dmg 2>/dev/null || true
+            cp dist/*.zip upload/mac-installer.zip 2>/dev/null || true
+          else
+            cp dist/*.AppImage upload/linux-installer.AppImage 2>/dev/null || true
+            cp dist/*.tar.gz upload/linux-installer.tar.gz 2>/dev/null || true
+          fi
+
       - name: Get date for tag
         id: get_date
         run: |
@@ -49,7 +63,7 @@ jobs:
         with:
           tag_name: build-${{ steps.get_date.outputs.date }}
           name: "Sapar Mini build ${{ steps.get_date.outputs.date }}"
-          files: dist/**
+          files: upload/**
           draft: false
           prerelease: false
         env:
