@@ -1,4 +1,5 @@
-<img src="public/promo-badge.png"><br>
+![Logo](public/promo-badge.png)
+<br>
 
 **Sapar Mini** is a lightweight, offline-first media server and file manager built with **Electron** and **Node.js**. It allows you to share files, stream media, and manage folders over a local network — no internet required.
 
@@ -10,7 +11,7 @@
 ![Repo Size](https://img.shields.io/github/repo-size/DreamerView/sapar)
 ![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20macOS%20%7C%20Linux-blue)
 
-![Логотип](public/promo.png)
+![Promo](public/promo.png)
 
 ---
 
@@ -26,18 +27,10 @@
 
 ## 🛠 Technologies
 
-<a href="https://www.electronjs.org/" target="_blank">
-<img src="https://img.shields.io/badge/Electron-2E2AB0?logo=electron&logoColor=47848F&style=for-the-badge">
-</a>
-<a href="https://expressjs.com/" target="_blank">
-<img src="https://img.shields.io/badge/Express.js-2E2AB0?logo=express&logoColor=white&style=for-the-badge">
-</a>
-<a href="https://getbootstrap.com/" target="_blank">
-<img src="https://img.shields.io/badge/Bootstrap-2E2AB0?logo=bootstrap&logoColor=7952B3&style=for-the-badge">
-</a>
-<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-<img src="https://img.shields.io/badge/JavaScript_ES6%2B-2E2AB0?logo=javascript&logoColor=F7DF1E&style=for-the-badge">
-</a>
+[![Electron](https://img.shields.io/badge/Electron-2E2AB0?logo=electron&logoColor=47848F&style=for-the-badge)](https://www.electronjs.org/)
+[![Express.js](https://img.shields.io/badge/Express.js-2E2AB0?logo=express&logoColor=white&style=for-the-badge)](https://expressjs.com/)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-2E2AB0?logo=bootstrap&logoColor=7952B3&style=for-the-badge)](https://getbootstrap.com/)
+[![JavaScript](https://img.shields.io/badge/JavaScript_ES6%2B-2E2AB0?logo=javascript&logoColor=F7DF1E&style=for-the-badge)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
 ---
 
