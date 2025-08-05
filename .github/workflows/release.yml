@@ -38,6 +38,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Prepare installers only
+        shell: bash
         run: |
           mkdir upload
           if [[ "$RUNNER_OS" == "Windows" ]]; then
