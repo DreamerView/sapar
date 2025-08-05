@@ -1,4 +1,4 @@
-# Sapar Mini
+<img src="public/promo-badge.png"><br>
 
 **Sapar Mini** is a lightweight, offline-first media server and file manager built with **Electron** and **Node.js**. It allows you to share files, stream media, and manage folders over a local network — no internet required.
 
