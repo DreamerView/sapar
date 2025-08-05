@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -21,13 +23,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-
-      - name: Get version
-        id: get_version
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-        shell: bash
 
       - name: Build app
         run: |
@@ -42,36 +37,20 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-${{ matrix.os }}
-          path: dist/**
-
-  publish:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: all_builds
-
-      - name: List downloaded files
-        run: ls -R all_builds
-
-      - name: Get version from package.json
-        id: get_version
+      - name: Get date for tag
+        id: get_date
         run: |
-          VERSION=$(node -p "require('${{ github.workspace }}/package.json').version")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          DATE=$(date +'%Y-%m-%d_%H-%M-%S')
+          echo "date=$DATE" >> $GITHUB_OUTPUT
         shell: bash
 
-      - name: Create GitHub Release
+      - name: Upload to GitHub Release (Date Tag)
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ steps.get_version.outputs.version }}
-          name: "Sapar Mini v${{ steps.get_version.outputs.version }}"
-          files: all_builds/**
+          tag_name: build-${{ steps.get_date.outputs.date }}
+          name: "Sapar Mini build ${{ steps.get_date.outputs.date }}"
+          files: dist/**
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
