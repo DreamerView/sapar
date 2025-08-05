@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -42,29 +40,41 @@ jobs:
         run: |
           mkdir upload
           if [[ "$RUNNER_OS" == "Windows" ]]; then
-            cp dist/*.exe upload/win-installer.exe 2>/dev/null || true
-            cp dist/*.msi upload/win-installer.msi 2>/dev/null || true
+            cp dist/*.exe upload/"Sapar Mini for Windows.exe" 2>/dev/null || true
+            cp dist/*.msi upload/"Sapar Mini for Windows.msi" 2>/dev/null || true
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
-            cp dist/*.dmg upload/mac-installer.dmg 2>/dev/null || true
-            cp dist/*.zip upload/mac-installer.zip 2>/dev/null || true
+            cp dist/*.dmg upload/"Sapar Mini for MacOS.dmg" 2>/dev/null || true
           else
-            cp dist/*.AppImage upload/linux-installer.AppImage 2>/dev/null || true
-            cp dist/*.tar.gz upload/linux-installer.tar.gz 2>/dev/null || true
+            cp dist/*.AppImage upload/"Sapar Mini for Linux.AppImage" 2>/dev/null || true
           fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: installers-${{ matrix.os }}
+          path: upload/*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all installers
+        uses: actions/download-artifact@v4
+        with:
+          path: all-installers
 
       - name: Get date for tag
         id: get_date
         run: |
           DATE=$(date +'%Y-%m-%d_%H-%M-%S')
           echo "date=$DATE" >> $GITHUB_OUTPUT
-        shell: bash
 
-      - name: Upload to GitHub Release (Date Tag)
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: build-${{ steps.get_date.outputs.date }}
           name: "Sapar Mini build ${{ steps.get_date.outputs.date }}"
-          files: upload/**
+          files: all-installers/**/*
           draft: false
           prerelease: false
         env:
