@@ -1,0 +1,95 @@
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen-sm-down">
+        <div class="modal-content p-1 border-0">
+            <div class="modal-header d-flex gap-3 border-0">
+                <input type="search" id="fs-search" name="" placeholder="Найти" id="" class="form-control px-4 bg-body-secondary rounded-4"/>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column gap-1" id="render-search-fs">
+                    
+                </div>
+                <div class="my-4 d-flex flex-column align-items-center" id="start-search">
+                    <img src="/images/start.png" class="mx-auto" style="max-width: 300px;width: calc(100% - 36px);aspect-ratio: 1;" alt="" loading="lazy"/>
+                    <h4 class="mt-4">Готовы к поиску?</h4>
+                    <p class="text-muted text-center mt-3">Введите название файла или папки, чтобы начать</p>
+                </div>
+                <div class="my-4 d-flex flex-column align-items-center d-none" id="not-found-search">
+                  <img src="/images/not-found.png" class="mx-auto" style="max-width: 300px;width: calc(100% - 36px);aspect-ratio: 1;" alt="" loading="lazy"/>
+                  <h4 class="mt-4">Ничего не найдено</h4>
+                  <p class="text-muted text-center mt-3">Проверьте запрос или попробуйте другие слова</p>
+                </div>
+                <div class="my-4 d-flex flex-column align-items-center d-none" id="error-search">
+                  <img src="/images/error.png" class="mx-auto" style="max-width: 300px;width: calc(100% - 36px);aspect-ratio: 1;" alt="" loading="lazy"/>
+                  <h4 class="mt-4">Ошибка</h4>
+                  <p class="text-muted text-center mt-3">Тут будет показано ошибка</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="module">
+  const searchInput = document.getElementById("fs-search");
+  const renderEl    = document.getElementById("render-search-fs");
+  const startBlock = document.getElementById("start-search");
+  const notFoundBlock = document.getElementById("not-found-search");
+  const errorBlock = document.getElementById("error-search");
+
+  let debounceTimer;
+  let controller;
+
+  searchInput.addEventListener("input", (e) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+      startBlock.classList.add("d-none");
+      errorBlock.classList.add("d-none");
+      
+      const query = e.target.value.trim();
+
+      // если пусто — очищаем результат
+      if (!query) {
+        renderEl.textContent = "";
+        notFoundBlock.classList.add("d-none");
+        startBlock.classList.remove("d-none");
+        return;
+      }
+
+      // отменяем предыдущий запрос
+      if (controller) controller.abort();
+      controller = new AbortController();
+
+      try {
+        const resp = await fetch(
+          `/fs-search?fs=${encodeURIComponent(query)}`,
+          { signal: controller.signal }
+        );
+        if (!resp.ok) throw new Error(resp.statusText);
+
+        const res = await resp.json();
+
+        notFoundBlock.classList.add("d-none");
+        if (res.length === 0) {
+          renderEl.textContent = "";
+          notFoundBlock.classList.remove("d-none");
+          return;
+        }
+
+        // оригинальная сборка innerHTML через .map — без изменений
+        renderEl.innerHTML = res
+          .map((r, index) =>
+            `<a class="btn text-start rounded-4 p-3 ${index !== res.length - 1 ? "border-bottom" : ""} d-flex gap-4 align-items-center" style="border-radius:0!important;" href="/?fs=${encodeURIComponent(r.fullPath)}">
+               <i class="bi bi-search fs-5"></i>
+               <p class="m-0">${r.name}</p>
+             </a>`
+          )
+          .join("");
+      } catch (err) {
+        // игнорируем отмену
+        if (err.name === "AbortError") return;
+        errorBlock.querySelector("p").textContent = err.message;
+        errorBlock.classList.remove('d-none');
+        return;
+      }
+    }, 100);
+  });
+</script>

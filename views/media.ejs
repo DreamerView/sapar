@@ -1,0 +1,29 @@
+<% layout('layout') %>
+
+<section class="container-xxl py-5" data-aos="fade-in">
+    <a href="/" data-aos="fade-right" class="btn btn-secondary rounded-4 d-inline-flex gap-2">
+        <i class="bi bi-arrow-left-circle"></i>
+        Back
+    </a>
+    <h3 class="mt-4" data-aos="fade-right" data-aos-delay="200">Video</h3>
+    <div class="bg-body mt-4 rounded-4 mx-auto" data-aos="fade-up" style="max-width:800px;width:100%; aspect-ratio:12/8;">
+        <video
+            id="player"
+            class="rounded-4"
+            playsinline
+            controls
+            style="width:100%; aspect-ratio:12/8;"
+        >
+            <source src="video.mp4" type="video/mp4">
+        </video>
+    </div>
+    <script type="module">
+        window.addEventListener("load",()=>{
+            const player = new Plyr('#player');
+            player.on('ready', event => {
+                document.querySelector('.plyr').classList.add('rounded-4');
+                document.querySelector(".plyr").style.cssText = "max-width:800px;width:100%;aspect-ratio:12/8"
+            });
+        });
+    </script>
+</section>

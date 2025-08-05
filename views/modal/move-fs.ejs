@@ -1,0 +1,127 @@
+<div class="modal fade" id="moveFsModal" tabindex="-1" aria-labelledby="moveFsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen-sm-down">
+        <form onsubmit="sendMoveReq(event)" class="modal-content p-1">
+            <div class="modal-header border-0">
+                <h1 class="modal-title fs-5" id="moveFsModalLabel">Перемещение</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-center bg-body-secondary mb-4 rounded-4 py-3 px-4 overflow-x-auto"
+                style="min-width: 0;">
+                    <nav class="flex-grow-1" style="min-width: 0;">
+                        <ol class="breadcrumb flex-nowrap mb-0" id="move-breadcrumbs" style="padding:0; margin:0;">
+                            
+                        </ol>
+                    </nav>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">First</th>
+                        </tr>
+                    </thead>
+                    <tbody id="render-fs-move-list">
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer border-0">
+                <div class="row w-100 gap-sm-0 gap-2">
+                    <div class="col-12 order-1">
+                        <p class="text-muted">Выбрано папка: <b id="render-fs-move-selected"></b></p>
+                    </div>
+                    <div class="col-sm-6 order-sm-2 order-3 col-12 d-flex align-items-center">
+                        <button type="button" data-bs-dismiss="modal" aria-label="Закрыть"
+                            class="btn btn-outline-secondary border-0 rounded-4 w-100">
+                            Отмена
+                        </button>
+                    </div>
+                    <div class="col-sm-6 order-sm-3 order-2 col-12 d-flex align-items-center">
+                        <button type="submit" class="btn btn-primary rounded-4 w-100">
+                            Переместить в "<b id="render-fs-move-select"></b>"
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let movePath = null;
+    const renderFsMoveList = document.getElementById("render-fs-move-list");
+    const renderFsBreadcrumbs = document.getElementById("move-breadcrumbs");
+    const renderFsMoveSelected = document.getElementById("render-fs-move-selected");
+    const renderFsMoveSelect = document.getElementById("render-fs-move-select");
+
+    const startMoveReq = async (path = "") => {
+        try {
+            const req = await fetch(`/api/get-sub-directory?fs=${path}`);
+            if (!req.ok) throw new Error("Ошибка сети");
+
+            const res = await req.json();
+            if (!res.status) throw new Error(res.msg || "Ошибка данных");
+
+            const html = res.folders?.map(j => `
+                <tr>
+                    <td class="col-10">${j.name}</td>
+                    <td class="col-2">
+                        <button class="btn btn-warning rounded-4 d-flex gap-2" onclick="startMoveReq('${j.base64Path}')" type="button"><i class="bi bi-folder-symlink-fill"></i>Открыть</button>
+                    </td>
+                </tr>
+            `).join("") || "";
+
+            const breadcrumbs = res.breadcrumbs?.map((b, index) => `
+                <li class="breadcrumb-item flex-shrink-0 ${index === res.breadcrumbs.length - 1 ? 'active' : ''}"
+                    ${index === res.breadcrumbs.length - 1 ? 'aria-current="page"' : ''}>
+                    ${index === res.breadcrumbs.length - 1
+                        ? `<span class="text-nowrap">${b.name}</span>`
+                        : `<button type="button" class="nav-link link-primary text-nowrap" onclick="startMoveReq('${b.base64Path}')">${b.name}</button>`}
+                </li>
+            `).join("") || "";
+
+            renderFsMoveList.innerHTML = html;
+            renderFsBreadcrumbs.innerHTML = breadcrumbs;
+            renderFsMoveSelected.textContent = res.current?.name || "—";
+            renderFsMoveSelect.textContent = res.current?.name || "—";
+            movePath = res.current?.base64Path || null;
+        } catch (err) {
+            console.error("Ошибка при загрузке папок:", err.message);
+            renderFsMoveList.innerHTML = `<tr><td colspan="2" class="text-danger">Ошибка загрузки: ${err.message}</td></tr>`;
+            renderFsBreadcrumbs.innerHTML = "";
+            renderFsMoveSelected.textContent = "—";
+            movePath = null;
+        }
+    };
+
+    let moveTargets = [];
+
+    const sendMoveReq = async(event) => {
+        event.preventDefault();
+        try {
+            if(!movePath) return;
+            const data = { base64Targets:moveTargets, base64Dest:movePath };
+            console.log(data);
+            const req = await fetch('/api/move-fs', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json',"Accept":"application/json" },
+                body: JSON.stringify(data)
+            });
+            if(!req.ok) throw new Error("Internet error");
+            const res = await req.json();
+            if(res.status===false) throw new Error(res.msg);
+            window.location.href=`?fs=${movePath}`;
+        } catch(error) {
+            console.log(error);
+        }
+    }
+
+    window.addEventListener('load', () => {
+        const myModalEl = document.getElementById('moveFsModal');
+
+        myModalEl.addEventListener('show.bs.modal', async () => {
+            await startMoveReq(); // загрузка корня
+        });
+    });
+</script>

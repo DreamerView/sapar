@@ -1,0 +1,39 @@
+<div class="modal fade" id="createFolderModal" tabindex="-1" aria-labelledby="createFolderModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="create-folder-form" class="modal-content p-1 rounded-4">
+      <div class="modal-header border-0">
+        <h1 class="modal-title fs-5" id="createFolderModalLabel">Новая папка</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        <label for="new-folder-input" class="mb-3">Введите имя папки</label>
+        <input type="text" name="" id="new-folder-input" class="form-control form-control-lg bg-body-secondary px-4 py-2 rounded-4 border-0" placeholder="Введите имя папки"/>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="submit" class="btn btn-primary btn-lg rounded-4 w-100">
+          Создать
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+    const form = document.getElementById("create-folder-form");
+    form.addEventListener("submit",async(e)=>{
+        try {
+            e.preventDefault();
+            const name = e.target[1].value.trim() || null;
+            if(!name) return;
+            const url = window.location.search.replace("?fs=","") || "/";
+            const req = await fetch("/api/create-folder",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({name,url})});
+            if(!req.ok) throw new Error("Internet error");
+            const res = await req.json();
+            if(res.status===false) throw new Error(res.msg);
+            window.location.reload();
+        } catch(error) {
+            console.error(error);
+        }
+
+    });
+</script>

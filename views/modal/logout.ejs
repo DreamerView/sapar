@@ -1,0 +1,27 @@
+<div class="modal fade" id="signOutModal" tabindex="-1" aria-labelledby="signOutModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content p-1 rounded-4">
+      <div class="modal-header border-0">
+        <h1 class="modal-title fs-5" id="signOutModalLabel">Выход из системы</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        Вы уверены, что хотите выйти?
+      </div>
+      <div class="modal-footer border-0">
+        <div class="row w-100">
+          <div class="col-6">
+            <button type="button" class="btn btn-outline-secondary border-0 rounded-4 w-100" data-bs-dismiss="modal">
+              Отмена
+            </button>
+          </div>
+          <div class="col-6">
+            <a href="/auth-api/logout" class="btn btn-danger rounded-4 w-100">
+              Выйти
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,153 @@
+<% 
+    const shortenText = (t, m = 32) => t.length > m ? t.slice(0, m) + '...' : t;
+%>
+
+<div class="d-flex justify-content-between bg-body-secondary p-sm-3 py-3 px-2 w-100 rounded-4 mt-4 d-none gap-3 gap-sm-0 mx-auto" id="select-action-block">
+    <div class="d-flex align-items-center gap-2">
+        <button id="clearSelectAction" class="btn btn-outline-danger border-0 rounded-4"><i class="bi bi-x-lg"></i></button>
+        <p class="m-0">Выбрано: <b id="select-action-list">0</b> элементов</p>
+    </div>
+    <div class="dropdown">
+        <button class="btn btn-secondary rounded-4" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-three-dots-vertical"></i>
+        </button>
+        <ul class="dropdown-menu px-1 py-2 rounded-4" data-bs-theme="dark">
+            <li><button class="dropdown-item d-flex gap-2 align-items-center rounded-4" id="moveSelectedList" type="button"><i class="bi bi-box-arrow-up-right"></i>Переместить</button></li>
+            <li><button class="dropdown-item d-flex gap-2 align-items-center rounded-4" id="deleteSelectedList" type="button"><i class="bi bi-trash3"></i>Удалить</button></li>
+        </ul>
+    </div>
+</div>
+
+<div class="row mt-4 mt-sm-0">
+    <% list.forEach((render,index)=>{ %>
+    <div class="dropdown col-xl-2 col-lg-3 col-sm-4 col-6 mt-md-4 mt-1 no-select" title="<%- render['name']%>"
+        ondblclick="goTo('?fs=<%- render['path'] %>')" style="cursor: pointer;" data-context-dropdown>
+        <div data-bs-toggle="dropdown" data-selected-dropdown="<%- index %>" data-fs-dropdown aria-expanded="false" data-fs-selected-name="<%- render.name %>" data-fs-selected-path="<%- render.path %>"
+            class="text-center d-block text-decoration-none text-body hover rounded-4 p-3 scale-hover" data-fs>
+            <img src="/images/<%- render["type"]==="directory"?"directory":render.icon %>.png?v=1.0.3"
+                style="max-width: 100px;width:100%;margin:0 auto;aspect-ratio:1;" alt="" />
+            <h6 class="mt-4 text-break"><%-shortenText(render['name']) %></h6>
+        </div>
+        <ul class="dropdown-menu px-1 py-2 rounded-4" data-bs-theme="dark">
+            <li><a class="dropdown-item d-flex gap-2 align-items-center rounded-4" href="?fs=<%- render['path'] %>"><i
+                        class="bi bi-folder-symlink"></i>Открыть</a></li>
+            <li><button class="dropdown-item d-flex gap-2 align-items-center rounded-4" onclick="renameFs('<%- render['name'] %>','<%- render['path'] %>')"><i
+                        class="bi bi-fonts"></i>Переименовать</button></li>
+            <li><button class="dropdown-item d-flex gap-2 align-items-center rounded-4" onclick="startSelectDropdown(event)" data-dropdown-start-select="<%- index %>"><i 
+                        class="bi bi-check2-square"></i>Выбрать</button></li>
+        </ul>
+    </div>
+    <% }) %>
+</div>
+
+
+<script>
+    let startSelect = false;
+    const goTo = (href) => {
+        if (!startSelect) window.location.href = href;
+    };
+
+    const getFS = document.querySelectorAll("[data-fs]");
+    const selectActionList = document.getElementById("select-action-list");
+    const selectActionBlock = document.getElementById("select-action-block");
+    const dropdownStartSelect = document.querySelectorAll("[data-dropdown-start-select]");
+    const deleteSelectedList = document.getElementById("deleteSelectedList");
+    const deleteFsSelectedList = document.getElementById("delete-fs-selected-list");
+    const moveSelectedList = document.getElementById("moveSelectedList");
+
+    const toggleDropdowns = (enabled = true) => {
+        getFS.forEach(trigger => {
+            const dropdown = bootstrap.Dropdown.getInstance(trigger);
+            if (enabled) {
+                if (!dropdown) new bootstrap.Dropdown(trigger);
+                trigger.setAttribute('data-bs-toggle', 'dropdown');
+            } else {
+                dropdown?.hide();
+                dropdown?.dispose();
+                trigger.removeAttribute('data-bs-toggle');
+            }
+        });
+    };
+
+    deleteSelectedList.addEventListener("click", () => {
+        const selectedFsName = [];
+        const selectedFsPath = [];
+        document.querySelectorAll("[data-fs-selected-path]").forEach(el => {
+            if (el.hasAttribute("data-fs-active")) {
+                selectedFsName.push(el.getAttribute("data-fs-selected-name"));
+                selectedFsPath.push(el.getAttribute("data-fs-selected-path"));
+            }
+        });
+
+        const html = selectedFsName.map(el => `<li>${el}</li>`).join("");
+        deleteFsSelectedList.innerHTML = html;
+        deletePathList = selectedFsPath;
+
+        // Используем или создаём один экземпляр модалки
+        const modalEl = document.getElementById("deleteFsSelectedModal");
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    });
+
+    moveSelectedList.addEventListener("click",()=>{
+        const selectedFsPath = [];
+        document.querySelectorAll("[data-fs-selected-path]").forEach(el=>{
+            if(el.hasAttribute("data-fs-active")) {
+                selectedFsPath.push(el.getAttribute("data-fs-selected-path"))
+            }
+        });
+        const modalEl = document.getElementById("moveFsModal");
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+        moveTargets = selectedFsPath;
+    })
+
+    const startSelectDropdown = (event) => {
+        event.preventDefault();
+        const selectedIndex = event.target.getAttribute("data-dropdown-start-select");
+        const elSelected  = document.querySelector(`[data-selected-dropdown="${selectedIndex}"]`);
+        elSelected.classList.add("bg-info");
+        elSelected.setAttribute("data-fs-active","");
+        startSelect = true;
+        toggleDropdowns(false);
+        const active = document.querySelectorAll("[data-fs-active]");
+        selectActionList.textContent = active.length;
+        selectActionBlock.classList.remove("d-none");
+    }
+
+    document.getElementById("clearSelectAction").addEventListener("click",()=>{
+        startSelect = false;
+        toggleDropdowns(true);
+        document.querySelectorAll("[data-fs-active]").forEach(fs=>{
+            fs.classList.remove("bg-info");
+            fs.removeAttribute("data-fs-active");
+        });
+        selectActionBlock.classList.add("d-none");
+    });
+
+
+    document.addEventListener("click", (e) => {
+        const el = e.target.closest("[data-fs]");
+        if (!el) return;
+
+        if (e.shiftKey) {
+            startSelect = true;
+            toggleDropdowns(false); // отключаем dropdown
+            selectActionBlock.classList.remove("d-none");
+        }
+
+        if (startSelect) {
+            el.classList.toggle("bg-info");
+            el.toggleAttribute("data-fs-active");
+        }
+
+        const active = document.querySelectorAll("[data-fs-active]");
+        if (active.length === 0) {
+            startSelect = false;
+            toggleDropdowns(true); // включаем обратно dropdown
+            selectActionBlock.classList.add("d-none");
+        }
+        selectActionList.textContent = active.length;
+    });
+
+</script>

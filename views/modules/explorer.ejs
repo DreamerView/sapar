@@ -1,0 +1,102 @@
+<section class="container-xxl pt-5">
+
+    <% if(name && name!=="") { %>
+    <h4><%-name %></h4>
+    <% } %>
+
+    <% if(typePath==="directory") { %>
+    
+    <%- include("fs-list.ejs") %>
+
+    <% } %>
+
+    <% if(typePath==="file") { %>
+    <div class="row my-md-5 my-4">
+        <div class="col-md-6 px-lg-5 px-md-4">
+
+            <% if(fileType.type==="audio") { %>
+
+            <%-include("audio-player") %>
+
+            <% } %>
+
+            <% if(fileType.type==="image") { %>
+
+            <%- include("image-preview.ejs") %>
+
+            <% } %>
+
+            <% if(fileType.type==="video") { %>
+            
+            <%-include("video-player.ejs") %>
+
+            <% } %>
+
+            <% if(fileType.type==="preview") { %>
+
+                <iframe src="<%-fileContent %>" class="rounded-4 border" style="max-width:800px;width:100%;aspect-ratio: 12/8;" loading="lazy"></iframe>
+            
+            <% } %>
+        </div>
+        <div class="col-md-6 px-lg-5 px-md-4 mt-md-0 mt-5">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-4 mt-md-4 mb-4">
+                <h4 class="m-0">Информация о файле</h4>
+                <a href="<%-fileContent %>" download class="btn btn-primary rounded-4 scale-hover">Скачать</a>
+            </div>
+            <div class="bg-body-tertiary p-4 rounded-4">
+                <% if (fileInfo) { %>
+                <% 
+                    // Мапа для человеко‑читаемых названий полей
+                    const labels = {
+                        name:         'Имя файла',
+                        size:         'Размер (байт)',
+                        humanSize:    'Размер',
+                        birthTime:    'Дата создания',
+                        modifiedTime: 'Дата изменения',
+                        accessedTime: 'Дата последнего доступа',
+                        changedTime:  'Дата изменения метаданных',
+                        mimeType:     'MIME‑тип',
+                        fullMime:     'Полный MIME‑тип'
+                    };
+                    const entries = Object.entries(fileInfo);
+                %>
+
+                <% entries.forEach(([key, val], idx) => { %>
+                    <div class="row py-1 align-items-center">
+                        <div class="col-5 text-secondary">
+                            <%= labels[key] || key %>
+                        </div>
+                        <div class="col-7">
+                            <%= val instanceof Date? val.toLocaleString(): val %>
+                        </div>
+                    </div>
+                <% }) %>
+                <% } else { %>
+                    <p class="text-center text-muted m-0">Информация о файле отсутствует</p>
+                <% } %>
+            </div>
+
+        </div>
+
+    </div>
+
+    <% const filtered = fileList.filter(f => '/media' + f.path !== fileContent);%>
+
+    <% if (filtered.length > 0) { %>
+
+    <h4>Другие изображения</h4>
+    <div class="row mt-5">
+
+        <% filtered.forEach(item => { %>
+        <a href="/?fs=<%- item.fullPath %>" class="col-3">
+            <!-- <img src="/media<%- item.path %>" class="w-100 rounded-4" loading="lazy"
+                style="aspect-ratio: 1; object-fit: cover;" alt="" /> -->
+        </a>
+        <% }) %>
+    </div>
+
+    <% } %>
+
+    <% } %>
+
+</section>

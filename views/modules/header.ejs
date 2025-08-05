@@ -1,0 +1,33 @@
+<%- include("../modal/logout") %>
+
+<header
+  class="container-xxl py-4 top-0"
+  style="
+    z-index: 999;
+    
+  "
+>
+    <div class="row">
+        <div class="col-6">
+            <a href="/" title="Домой">
+                <img src="/logo.png" class="scale-hover" loading="lazy" style="max-width: 100px;width:100%;" alt="" />
+            </a>
+        </div>
+        <div class="col-6 d-flex justify-content-end align-items-center">
+            <div class="dropdown">
+                <button title="Профиль" class="btn btn-lg rounded-circle p-0 scale-hover" style="width:40px;height:40px;"
+                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="/user.png" width="40" height="40" class="rounded-circle" loading="lazy" alt=""/>
+                </button>
+                <ul class="dropdown-menu px-1 py-2 rounded-4 mt-2" data-bs-theme="dark">
+                    <li><a class="dropdown-item d-flex gap-2 align-items-center rounded-4" href="/"><i class="bi bi-hdd"></i>Медиа-сервер</a></li>
+                    <li><button class="dropdown-item d-flex gap-2 align-items-center rounded-4" type="button" data-bs-toggle="modal" data-bs-target="#showConnectModal"><i class="bi bi-hdd"></i>Поделиться</button></li>
+                    <li><a class="dropdown-item d-flex gap-2 align-items-center rounded-4" href="/guest"><i class="bi bi-people"></i>Гостевой</a></li>
+                    <li><a class="dropdown-item d-flex gap-2 align-items-center rounded-4" href="/chat"><i class="bi bi-chat-dots"></i>Чаты</a></li>
+                    <li><a class="dropdown-item d-flex gap-2 align-items-center rounded-4" href="/settings"><i class="bi bi-gear-wide-connected"></i>Настройки</a></li>
+                    <li><button class="dropdown-item d-flex gap-2 align-items-center rounded-4" data-bs-toggle="modal" data-bs-target="#signOutModal"><i class="bi bi-box-arrow-in-left"></i>Выйти</button></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>

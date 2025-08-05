@@ -1,0 +1,31 @@
+{
+  "name": "sapar",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Temirkhan Rustemov",
+  "type": "commonjs",
+  "main": "start.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon .",
+    "server": "node .",
+    "start": "chcp 65001 > nul && electron ."
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "bonjour": "^3.5.0",
+    "cookie-parser": "^1.4.7",
+    "ejs": "^3.1.10",
+    "ejs-mate": "^4.0.0",
+    "express": "^5.1.0",
+    "file-type": "^16.5.4",
+    "mime-types": "^3.0.1",
+    "multer": "^2.0.2",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "electron": "^37.2.4",
+    "nodemon": "^3.1.10"
+  }
+}

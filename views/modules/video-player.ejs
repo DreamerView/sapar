@@ -1,0 +1,13 @@
+<div class="py-md-4">
+    <div class="bg-dark rounded-4 border" style="max-width:1000px;width:100%; aspect-ratio:12/8;">
+        <video id="player" class="rounded-4" playsinline webkit-playsinline x5-playsinline controls preload="none"
+            style="width:100%; aspect-ratio:12/8;" src="<%-fileContent %>" loading="lazy" poster="/video-promo.png">
+        </video>
+    </div>
+</div>
+
+<script>
+    window.addEventListener("load",()=>{
+        document.getElementById("player").poster = "/video-promo.png";
+    });
+</script>

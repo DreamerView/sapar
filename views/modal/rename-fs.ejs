@@ -1,0 +1,54 @@
+<div class="modal fade" id="renameFsModal" tabindex="-1" aria-labelledby="renameFsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="rename-fs-form" class="modal-content p-1 rounded-4">
+      <div class="modal-header border-0">
+        <h1 class="modal-title fs-5" id="renameFsModalLabel">Новое имя элемента</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        <label for="rename-fs-input" class="mb-3">Укажите новое имя</label>
+        <input type="text" name="" id="rename-fs-input" class="form-control form-control-lg bg-body-secondary px-4 py-2 rounded-4 border-0" placeholder="Введите новое имя"/>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="submit" class="btn btn-primary btn-lg rounded-4 w-100">
+          Переименовать
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  let renameFullPath = null;
+  const renameFsInput = document.getElementById("rename-fs-input");
+  const renameFs = (name,path) => {
+    if(!path) return;
+    renameFullPath = {name,path};
+    const modalEl = document.getElementById("renameFsModal");
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+    renameFsInput.value=name;
+  }
+</script>
+
+<script type="module">
+    const form = document.getElementById("rename-fs-form");
+    form.addEventListener("submit",async(e)=>{
+        try {
+            e.preventDefault();
+            if(!renameFullPath) return;
+            const name = e.target[1].value.trim() || null;
+            if(!name) return;
+            const url = window.location.search.replace("?fs=","") || "/";
+            const data = {newName:name,name:renameFullPath.name,path:url};
+            const req = await fetch("/api/rename-fs",{method:"PATCH",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(data)});
+            if(!req.ok) throw new Error("Internet error");
+            const res = await req.json();
+            if(res.status===false) throw new Error(res.msg);
+            window.location.reload();
+        } catch(error) {
+            console.error(error);
+        }
+
+    });
+</script>

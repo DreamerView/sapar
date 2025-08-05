@@ -1,0 +1,101 @@
+<div class="modal fade" id="uploadFileModal" tabindex="-1" aria-labelledby="uploadFileModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content p-1 rounded-4">
+      <div class="modal-header border-0">
+        <h1 class="modal-title fs-5" id="uploadFileModalLabel">Загрузка файлов</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        <input type="file" id="fileInput" multiple class="form-control form-control-lg rounded-4 mb-3" />
+
+        <!-- Контейнер для прогрессов -->
+        <div id="progressContainer" class="d-flex flex-column gap-2"></div>
+      </div>
+      <div class="modal-footer border-0">
+        <div class="row w-100">
+          <div class="col-12">
+            <button id="uploadBtn" class="btn btn-primary rounded-4 w-100">Загрузить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  const CHUNK_SIZE = 1024 * 1024; // 1MB
+
+  const uploadChunks = async () => {
+    const files = document.getElementById('fileInput').files;
+    const container = document.getElementById('progressContainer');
+    container.innerHTML = ''; // очистка
+
+    if (!files.length) return alert('Файлы не выбраны');
+
+    for (const file of files) {
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = `
+        <div class="small text-truncate mb-1">${file.name}</div>
+        <div class="progress rounded-4" style="height: 24px;">
+          <div class="progress-bar progress-bar-striped progress-bar-animated"
+              role="progressbar" style="width: 0%" aria-valuenow="0"
+              aria-valuemin="0" aria-valuemax="100">0%</div>
+        </div>
+      `;
+      const bar = wrapper.querySelector('.progress-bar');
+      container.appendChild(wrapper);
+
+      await uploadSingleFile(file, bar);
+    }
+
+    setTimeout(()=>{
+      window.location.reload();
+    },1000)
+
+  };
+
+  const uploadSingleFile = async (file, progressBar) => {
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+    const fileName = file.name;
+    const base64Path = window.location.search.replace("?fs=","") || "Lw==";
+
+    for (let index = 0; index < totalChunks; index++) {
+      const start = index * CHUNK_SIZE;
+      const end = Math.min(start + CHUNK_SIZE, file.size);
+      const chunk = file.slice(start, end);
+
+      const formData = new FormData();
+      formData.append('chunk', chunk);
+      formData.append('fileName', fileName);
+      formData.append('index', index);
+      formData.append('total', totalChunks);
+      formData.append('base64Path', base64Path);
+
+      try {
+        const res = await fetch('/api/upload-chunk', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!res.ok) throw new Error(`Чанк ${index + 1} не загружен`);
+
+        const percent = Math.floor(((index + 1) / totalChunks) * 100);
+        progressBar.style.width = `${percent}%`;
+        progressBar.setAttribute('aria-valuenow', percent);
+        progressBar.textContent = `${percent}%`;
+      } catch (err) {
+        console.error(err);
+        progressBar.classList.remove('progress-bar-animated');
+        progressBar.classList.add('bg-danger');
+        progressBar.textContent = 'Ошибка';
+        return;
+      }
+    }
+
+    progressBar.classList.remove('progress-bar-animated');
+    progressBar.classList.add('bg-success');
+    progressBar.textContent = 'Готово';
+  };
+
+  document.getElementById("uploadBtn").addEventListener("click", uploadChunks);
+</script>

@@ -1,0 +1,154 @@
+<% layout('layout') %>
+<main class="vh-100 d-flex align-items-sm-center justify-content-center pt-5 mt-5 mt-sm-0 pt-sm-0 px-4 px-sm-0">
+    <section style="width: 100%; max-width: 420px;">
+        <div class="mb-5 d-flex justify-content-center">
+            <img src="/logo.png" style="max-width:120px;width:calc(100% - 36px)">
+        </div>
+        <% if (authMode === 'register') { %>
+        <div class="mb-4">
+            <h2 class="fw-bold mb-2">Регистрация</h2>
+            <p class="text-muted mt-3">
+                Создайте пароль администратора для доступа к панели управления.
+            </p>
+        </div>
+
+        <form method="POST" action="/auth-api/register" class="d-grid gap-3 mt-4">
+            <label for="reg-password">Пароль</label>
+            <div class="input-group p-1 border rounded-4">
+                <input type="password" name="password" placeholder="Пароль" class="form-control form-control-lg border-0"
+                     required id="login-password" />
+                <button type="button" class="btn text-secondary border-0 btn-lg" onclick="togglePassword('reg-password', this)"
+                    tabindex="-1">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
+            <button type="submit" class="btn btn-success btn-lg w-100 rounded-4">Зарегистрироваться</button>
+            
+            <div class="d-flex align-items-center my-2">
+                <hr class="flex-grow-1">
+                <div class="px-2 text-muted small text-nowrap">Обратите внимание</div>
+                <hr class="flex-grow-1">
+            </div>
+            
+            <div class="alert alert-warning small text-start rounded-4" role="alert">
+                ⚠️ <strong>Внимание:</strong> Запомните и запишите пароль.
+                Изменить или удалить его можно будет только вручную через:<br>
+                <code>Мой компьютер / Документы / SaparMini / password.txt</code>
+            </div>
+        </form>
+
+        <% } else { %>
+        <div class="mb-4">
+            <h2 class="fw-bold mb-2">Войти</h2>
+            <p class="text-muted mt-4">Введите пароль для доступа к панели управления</p>
+        </div>
+
+        <form method="POST" action="/auth-api/login" class="d-grid gap-3 mt-4">
+            <label for="login-password" class="text-muted">Пароль</label>
+            <div class="input-group border rounded-4 p-1">
+                <input type="password" name="password" placeholder="••••••••"
+                    class="form-control form-control-lg text-center border-0" required
+                    id="login-password" />
+                <button type="button" class="btn text-secondary border-0" onclick="togglePassword('login-password', this)"
+                    tabindex="-1">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
+            <button type="submit" name="submit" class="btn btn-primary btn-lg w-100 rounded-4">Войти в систему</button>
+
+            <div class="d-flex align-items-center my-2">
+                <hr class="flex-grow-1">
+                <div class="px-2 text-muted small text-nowrap">или</div>
+                <hr class="flex-grow-1">
+            </div>
+            
+            <div class="row gap-sm-0 gap-4">
+                <div class="col-sm-6">
+                    <button type="button" onclick="location.href='/'" class="btn btn-lg w-100 btn-outline-dark border rounded-4">
+                        👤 Гость
+                    </button>
+                </div>
+                <div class="col-sm-6">
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#showConnectModal" class="btn btn-lg w-100 btn-outline-dark border rounded-4">
+                        📲 Поделиться
+                    </button>
+                </div>
+            </div>
+        </form>
+        <% } %>
+
+    </section>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector('form');
+        if (!form) return;
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            const url = form.getAttribute('action');
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success === true) {
+                    window.location.href = "/";
+                } else {
+                    alert("Не верный пароль")
+                }
+            } catch (err) {
+                console.error('Ошибка при отправке:', err);
+            }
+        });
+        document.getElementById("login-password").addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+            }
+        });
+    });
+
+    function togglePassword(id, button) {
+        const input = document.getElementById(id);
+        const icon = button.querySelector('i');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+    }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('input[type="password"]').forEach(input => {
+      input.addEventListener('input', (e) => {
+        // Разрешены: латинские буквы, цифры, спецсимволы
+        const allowed = /^[\x21-\x7E]+$/; // ASCII printable chars, исключая пробел
+        if (!allowed.test(e.target.value)) {
+          e.target.value = e.target.value.replace(/[^\x21-\x7E]/g, '');
+        }
+      });
+
+      input.addEventListener('keypress', (e) => {
+        const char = String.fromCharCode(e.which);
+        const allowed = /^[\x21-\x7E]$/; // запрет пробела и нелатинских
+        if (!allowed.test(char)) {
+          e.preventDefault();
+        }
+      });
+    });
+  });
+</script>

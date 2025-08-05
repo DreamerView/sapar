@@ -1,0 +1,87 @@
+<% if(typePath==="directory") { %>
+    <%- include("../modal/create-folder") %>
+    <%- include("../modal/upload-file") %>
+    <%- include("../modal/move-fs") %>
+    <%- include("../modal/rename-fs") %>
+<% } %>
+
+<%- include("../modal/delete-fs-selected") %>
+
+
+<section class="container-xxl">
+    <div class="row gap-md-0 gap-4">
+        <div class="col-lg-4 col-md-6">
+            <div
+                class="d-flex gap-md-3 gap-0 justify-content-between align-items-center h-100">
+                <button onclick="history.back()" class="btn btn-outline-light text-secondary border-0 py-2 px-3 scale-hover rounded-4" title="Назад">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M15.5831 4L8.9964 10.5866C8.62508 10.9633 8.41693 11.471 8.41693 12C8.41693 12.529 8.62508 13.0367 8.9964 13.4134L15.5831 20"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+                <button onclick="window.location.reload()"
+                    class="btn btn-outline-light text-secondary border-0 p-0 py-2 px-3 scale-hover rounded-4" title="Обновить">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M17.6054 7.70537C16.8708 6.96718 15.9972 6.38183 15.0351 5.98308C14.073 5.58435 13.0414 5.38013 12 5.38222C9.89717 5.38222 7.88054 6.21757 6.39364 7.70446C4.90674 9.19136 4.07141 11.208 4.07141 13.3107C4.07141 15.4146 4.9064 17.4323 6.39299 18.9209C7.87958 20.4095 9.89622 21.2472 12 21.25C14.1037 21.2472 16.1204 20.4095 17.607 18.9209C19.0936 17.4323 19.9286 15.4146 19.9286 13.3107"
+                            stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" />
+                        <path
+                            d="M16.8808 2.75L17.8292 6.60772C17.913 6.94965 17.858 7.31085 17.6763 7.61238C17.4945 7.9139 17.2009 8.13125 16.8594 8.21689L12.9911 9.16532"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+                <a href="/" class="btn btn-outline-light text-secondary border-0 p-0 py-2 px-3 scale-hover rounded-4" title="Домой">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M19.6325 7.11089L13.1591 3.08871C12.805 2.86736 12.3957 2.75 11.9781 2.75C11.5605 2.75 11.1512 2.86736 10.7971 3.08871L4.3237 7.13318C3.95562 7.36509 3.66349 7.69966 3.48332 8.09564C3.30315 8.49161 3.24283 8.93168 3.3098 9.36153L4.98106 19.3891C5.06888 19.9144 5.3419 20.3908 5.75067 20.7321C6.15944 21.0734 6.67693 21.2571 7.20941 21.2498H16.7913C17.3238 21.2571 17.8413 21.0734 18.2501 20.7321C18.6588 20.3908 18.9319 19.9144 19.0197 19.3891L20.6909 9.36153C20.7582 8.92366 20.6935 8.47568 20.5049 8.07479C20.3164 7.67391 20.0126 7.33833 19.6325 7.11089Z"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <button class="btn btn-outline-light text-secondary border-0 p-0 py-2 px-3 scale-hover rounded-4" data-bs-toggle="modal" data-bs-target="#searchModal" title="Поиск">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M10.7828 18.8276C12.3741 18.8298 13.9302 18.3601 15.2544 17.4781C16.5785 16.596 17.6112 15.3413 18.2216 13.8726C18.832 12.4039 18.9929 10.7872 18.6837 9.2271C18.3746 7.66702 17.6093 6.23364 16.4849 5.10831C15.3604 3.98299 13.9272 3.2163 12.3666 2.90525C10.8061 2.5942 9.18823 2.75277 7.71786 3.3609C6.24748 3.96902 4.99062 4.99937 4.10632 6.32158C3.22202 7.64379 2.75 9.19844 2.75 10.7888C2.75 12.919 3.59596 14.9621 5.10209 16.4693C6.60821 17.9766 8.65135 18.8248 10.7828 18.8276Z"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M16.4883 16.491L21.25 21.25" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+                <% if(typePath==="directory") { %>
+                <div class="dropdown">
+                    <button class="btn btn-outline-light text-secondary border-0 p-0 py-2 px-3 scale-hover rounded-4" data-bs-toggle="dropdown" aria-expanded="false" title="Подробнее">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 5.92C12.5302 5.92 12.96 5.49019 12.96 4.96C12.96 4.42981 12.5302 4 12 4C11.4698 4 11.04 4.42981 11.04 4.96C11.04 5.49019 11.4698 5.92 12 5.92Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 12.96C12.5302 12.96 12.96 12.5302 12.96 12C12.96 11.4698 12.5302 11.04 12 11.04C11.4698 11.04 11.04 11.4698 11.04 12C11.04 12.5302 11.4698 12.96 12 12.96Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 20C12.5302 20 12.96 19.5702 12.96 19.04C12.96 18.5098 12.5302 18.08 12 18.08C11.4698 18.08 11.04 18.5098 11.04 19.04C11.04 19.5702 11.4698 20 12 20Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <ul class="dropdown-menu px-1 py-2 rounded-4 mt-2" data-bs-theme="dark">
+                            <li><button class="dropdown-item d-flex gap-2 align-items-center rounded-4" type="button" data-bs-toggle="modal" data-bs-target="#createFolderModal"><i class="bi bi-folder-plus"></i>Создать папку</button></li>
+                            <li><button class="dropdown-item d-flex gap-2 align-items-center rounded-4" type="button" data-bs-toggle="modal" data-bs-target="#uploadFileModal"><i class="bi bi-upload"></i>Загрузить файл</button></li>
+                    </ul>
+                </div>
+                <% } %>
+            </div>
+        </div>
+        <div class="col-lg-8 col-md-6">
+            <div class="d-flex align-items-center bg-body-secondary rounded-4 py-3 px-4 overflow-x-auto"
+                style="min-width: 0;">
+                <nav class="flex-grow-1" style="min-width: 0;">
+                    <ol class="breadcrumb flex-nowrap mb-0" style="padding:0; margin:0;">
+                        <% breadCrumbs.forEach(crumb => { %>
+                        <li class="breadcrumb-item flex-shrink-0 <%= crumb.active ? 'active' : '' %>"
+                            <%= crumb.active ? 'aria-current="page"' : '' %>>
+                            <% if (crumb.active) { %>
+                            <span class="text-nowrap"><%- crumb.name %></span>
+                            <% } else { %>
+                            <a href="?fs=<%- crumb.fullPath %>" class="text-nowrap"><%- crumb.name %></a>
+                            <% } %>
+                        </li>
+                        <% }); %>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>

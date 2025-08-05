@@ -1,0 +1,55 @@
+<!-- Модальное окно -->
+<div class="modal fade" id="showConnectModal" tabindex="-1" aria-labelledby="showConnectModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content p-1 rounded-4">
+      <div class="modal-header border-0">
+        <h1 class="modal-title fs-5" id="showConnectModalLabel">Поделиться подключением</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        <div class="w-100 d-flex flex-column align-items-center my-2">
+          <div id="qrcode"></div>
+          <p class="text-center mt-3 text-muted small mt-5">
+            Отсканируйте QR-код, чтобы быстро поделиться подключением с другим устройством.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QR-код логика -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("showConnectModal");
+    const qrContainer = document.getElementById("qrcode");
+
+    let host = { host: null, ip: null };
+
+    // Получение IP или адреса подключения
+    const getHostParams = async () => {
+      try {
+        const req = await fetch("/api/get-host");
+        host = await req.json();
+      } catch (e) {
+        console.error("Не удалось получить адрес подключения:", e);
+        host.ip = "http://127.0.0.1"; // fallback
+      }
+    };
+
+    getHostParams();
+
+    modal.addEventListener("show.bs.modal", () => {
+      qrContainer.textContent = ""; // очистка
+
+      new QRCode(qrContainer, {
+        text: host.ip || "http://127.0.0.1",
+        width: 256,
+        height: 256,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    });
+  });
+</script>
