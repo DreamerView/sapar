@@ -1,7 +1,7 @@
 name: Build & Publish Sapar Mini
 
 on:
-  workflow_dispatch: # запуск вручную с кнопки
+  workflow_dispatch:
 
 jobs:
   prepare:
@@ -11,8 +11,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GH_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -22,16 +20,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Bump patch version
+      - name: Bump patch version (only in build)
         run: npm version patch --no-git-tag-version
-
-      - name: Commit updated version
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add package.json package-lock.json
-          git commit -m "Bump version"
-          git push origin HEAD:main
 
       - name: Get version from package.json
         id: get_version
@@ -41,8 +31,12 @@ jobs:
 
       - name: Create and push Git tag
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag v${{ steps.get_version.outputs.version }}
           git push origin v${{ steps.get_version.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
   build:
     needs: prepare
