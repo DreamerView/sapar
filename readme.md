@@ -24,16 +24,26 @@
 
 ## 🛠 Technologies
 
-- **Electron** — for cross-platform desktop app
-- **Express.js** — backend server for file access
-- **Bootstrap 5** — responsive and clean UI
-- **JavaScript (ES6+)** — everything written in modern vanilla JS
+<div style="display:flex; gap:8px; flex-wrap:wrap;">
+  <a href="https://www.electronjs.org/" target="_blank">
+    <img src="https://img.shields.io/badge/Electron-1E1E1E?logo=electron&logoColor=47848F&style=for-the-badge" style="border-radius:8px;">
+  </a>
+  <a href="https://expressjs.com/" target="_blank">
+    <img src="https://img.shields.io/badge/Express.js-1E1E1E?logo=express&logoColor=white&style=for-the-badge" style="border-radius:8px;">
+  </a>
+  <a href="https://getbootstrap.com/" target="_blank">
+    <img src="https://img.shields.io/badge/Bootstrap-1E1E1E?logo=bootstrap&logoColor=7952B3&style=for-the-badge" style="border-radius:8px;">
+  </a>
+  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
+    <img src="https://img.shields.io/badge/JavaScript_ES6%2B-1E1E1E?logo=javascript&logoColor=F7DF1E&style=for-the-badge" style="border-radius:8px;">
+  </a>
+</div>
 
 ---
 
 ## 📦 Installation
 
-Download the latest version from the (SOON).
+Download the latest version from the [Releases](https://github.com/DreamerView/sapar/releases).
 
 > ⚠️ No internet access is required after installation.
 
