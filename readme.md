@@ -5,7 +5,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![GitHub release](https://img.shields.io/github/v/release/DreamerView/sapar)](https://github.com/DreamerView/sapar/releases)
 [![Downloads](https://img.shields.io/github/downloads/DreamerView/sapar/total)](https://github.com/DreamerView/sapar/releases)
-![Build](https://img.shields.io/github/actions/workflow/status/DreamerView/sapar/build.yml)
 ![Last Commit](https://img.shields.io/github/last-commit/DreamerView/sapar)
 ![Contributors](https://img.shields.io/github/contributors/DreamerView/sapar)
 ![Repo Size](https://img.shields.io/github/repo-size/DreamerView/sapar)
