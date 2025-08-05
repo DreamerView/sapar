@@ -43,7 +43,7 @@
 
 ## 📦 Installation
 
-Download the latest version from the [Releases](https://github.com/DreamerView/sapar/releases).
+Download the latest version from the [Releases](https://github.com/DreamerView/sapar/releases/latest).
 
 > ⚠️ No internet access is required after installation.
 
