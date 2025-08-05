@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -24,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Get version from package.json
+      - name: Get version
         id: get_version
         run: |
           VERSION=$(node -p "require('./package.json').version")
@@ -42,12 +40,38 @@ jobs:
           fi
         shell: bash
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }} # ✅ передаём токен в electron-builder
-      - name: Upload to GitHub Release
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-${{ matrix.os }}
+          path: dist/**
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: all_builds
+
+      - name: List downloaded files
+        run: ls -R all_builds
+
+      - name: Get version from package.json
+        id: get_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.get_version.outputs.version }}
           name: "Sapar Mini v${{ steps.get_version.outputs.version }}"
-          files: dist/**
+          files: all_builds/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
