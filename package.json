@@ -1,7 +1,7 @@
 {
   "name": "sapar",
   "version": "1.0.0",
-  "description": "",
+  "description": "Sapar Mini is a lightweight, offline-first media server and file manager",
   "license": "MIT",
   "author": "Temirkhan Rustemov",
   "type": "commonjs",
@@ -11,8 +11,13 @@
     "dev": "nodemon .",
     "server": "node .",
     "start": "chcp 65001 > nul && electron .",
-    "build:win": "electron-builder --win",
-    "build:portable": "electron-builder --win portable"
+    "version:patch": "npm version patch --no-git-tag-version",
+
+    "build:win": "npm run version:patch && electron-builder --win",
+    "build:mac": "npm run version:patch && electron-builder --mac",
+    "build:linux": "npm run version:patch && electron-builder --linux",
+
+    "build:portable": "npm run version:patch && electron-builder --win portable"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -29,7 +34,10 @@
   "devDependencies": {
     "electron": "^37.2.4",
     "electron-builder": "^26.0.12",
-    "nodemon": "^3.1.10"
+    "icon-gen": "^5.0.0",
+    "nodemon": "^3.1.10",
+    "png-to-ico": "^2.1.8",
+    "sharp": "^0.34.3"
   },
   "build": {
     "appId": "com.temirkhan.saparmini",
@@ -50,8 +58,16 @@
       "!**/*.log"
     ],
     "win": {
-      "target": "nsis",
-      "icon": "build/icon.ico"
+      "target": ["nsis", "msi"],
+      "icon": "public/icons/win-icons.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "public/icons/mac-icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "public/icons/logo.png"
     },
     "nsis": {
       "oneClick": false,

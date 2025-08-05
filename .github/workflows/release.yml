@@ -1,0 +1,44 @@
+name: Build & Publish Sapar Mini
+
+on:
+  push:
+    tags:
+      - 'v*' # Запуск при пуше тега v1.0.0, v1.1.0 и т.д.
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build app
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            npm run build:win
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            npm run build:mac
+          else
+            npm run build:linux
+          fi
+        shell: bash
+
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/**
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
