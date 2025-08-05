@@ -1,6 +1,6 @@
 {
   "name": "sapar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sapar Mini is a lightweight, offline-first media server and file manager",
   "license": "MIT",
   "author": "Temirkhan Rustemov",
@@ -12,11 +12,9 @@
     "server": "node .",
     "start": "chcp 65001 > nul && electron .",
     "version:patch": "npm version patch --no-git-tag-version",
-
     "build:win": "npm run version:patch && electron-builder --win",
     "build:mac": "npm run version:patch && electron-builder --mac",
     "build:linux": "npm run version:patch && electron-builder --linux",
-
     "build:portable": "npm run version:patch && electron-builder --win portable"
   },
   "dependencies": {
@@ -58,7 +56,10 @@
       "!**/*.log"
     ],
     "win": {
-      "target": ["nsis", "msi"],
+      "target": [
+        "nsis",
+        "msi"
+      ],
       "icon": "public/icons/win-icons.ico"
     },
     "mac": {
