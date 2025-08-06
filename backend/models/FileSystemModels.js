@@ -293,8 +293,6 @@ class FileSystemModel {
             title = t;
         }
 
-        console.log(fullPath);
-
         const typeOfPathFs = await fs.stat(fullPath);
         const typeOfPath = typeOfPathFs.isDirectory() ? "directory" : "file";
 

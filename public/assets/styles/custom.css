@@ -18,12 +18,12 @@
     background-color: rgba(var(--bs-tertiary-bg-rgb), 0.8);
 }
 
-#app {
-    opacity: 0;
+#preloader {
+  opacity:1;
+  transition:opacity 0.5s ease;
 }
-
-#app.loaded {
-    animation: fadeIn 0.25s ease-in-out forwards;
+#preloader.hide {
+  opacity:0;
 }
 
 @keyframes fadeIn {
