@@ -57,7 +57,7 @@
   const uploadSingleFile = async (file, progressBar) => {
     const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
     const fileName = file.name;
-    const base64Path = window.location.search.replace("?fs=","") || "Lw==";
+    const base64Path = window.location.search.replace("?fs=","") || "/";
 
     for (let index = 0; index < totalChunks; index++) {
       const start = index * CHUNK_SIZE;
