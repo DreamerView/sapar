@@ -1,4 +1,4 @@
-<div id="preloader" style="
+<div id="preloaderEl" style="
         position:fixed;
         top:0;
         left:0;
@@ -13,10 +13,14 @@
     <div class="spinner"></div>
 </div>
 <script type="module">
-    const preloader = document.getElementById("preloader");
+    const preloaderEl = document.getElementById("preloaderEl");
+    const rootEl = document.getElementById("root");
     const links = [...document.querySelectorAll('link[rel="stylesheet"]')];
+    console.log(rootEl);
     if (!links.length) {
-        preloader.remove();
+        preloaderEl.remove();
+        rootEl.style.display="block";
+        console.log(rootEl)
     } else {
         let loadedCount = 0;
         links.forEach(link => {
@@ -27,14 +31,16 @@
                 link.addEventListener('load', () => {
                     loadedCount++;
                     if (loadedCount === links.length) {
-                        setTimeout(() => preloader.classList.add("hide"), 500);
-                        setTimeout(() => preloader.remove(), 1000);
+                        setTimeout(() => preloaderEl.classList.add("hide"), 500);
+                        setTimeout(() => preloaderEl.remove(), 1000);
+                        rootEl.style.display="block";
                     }
                 });
             }
         });
         if (loadedCount === links.length) {
-            preloader.remove();
+            preloaderEl.remove();
+            rootEl.style.display="block";
         }
     }
 </script>

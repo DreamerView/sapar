@@ -38,21 +38,17 @@
 <body class="px-2 px-xxl-0">
     
     <%- include("preloader") %>
-    <%- include("modules/search-modal.ejs") %>
-    <%- include("modal/show-connect") %>
-    <%- include("modal/preview-image") %>
+    <div id="root" style="display: none=;">
+        <%- include("modules/search-modal.ejs") %>
+        <%- include("modal/show-connect") %>
+        <%- include("modal/preview-image") %>
     <%- body %>
+    </div>
 
     <!-- скрипты с defer, плюс наша логика -->
     <script src="assets/scripts/bootstrap.bundle.min.js" defer></script>
     <script src="assets/scripts/aos.js" defer></script>
     <script src="assets/scripts/qrcode.js" defer></script>
-    <script type="module">
-        window.addEventListener("load", () => {
-            // AOS инициализация
-            AOS.init();
-        });
-    </script>
 
 </body>
 
