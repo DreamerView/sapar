@@ -36,21 +36,9 @@
 </head>
 
 <body class="px-2 px-xxl-0">
-    <div id="preloader" style="
-        position:fixed;
-        top:0;
-        left:0;
-        width:100vw;
-        height:100dvh;
-        background:#fff;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        z-index:9999;
-    ">
-        <div class="spinner"></div>
-    </div>
-    <%-include("modules/search-modal.ejs") %>
+    
+    <%- include("preloader") %>
+    <%- include("modules/search-modal.ejs") %>
     <%- include("modal/show-connect") %>
     <%- include("modal/preview-image") %>
     <%- body %>
@@ -62,41 +50,8 @@
     <script type="module">
         window.addEventListener("load", () => {
             // AOS инициализация
-            // добавляем класс, чтобы #app “выглядел”
-            // const preloader = document.getElementById("preloader");
-            // setTimeout(() => preloader.classList.add("hide"), 250); 
-            // setTimeout(() => preloader.remove(), 500); 
             AOS.init();
         });
-    </script>
-    <script>
-        const preloader = document.getElementById("preloader");
-        const links = [...document.querySelectorAll('link[rel="stylesheet"]')];
-
-        if (!links.length) {
-            preloader.remove();
-        } else {
-            let loadedCount = 0;
-            links.forEach(link => {
-                if (link.sheet) {
-                // Уже загружен
-                loadedCount++;
-                } else {
-                link.addEventListener('load', () => {
-                    loadedCount++;
-                    if (loadedCount === links.length) {
-                    setTimeout(() => preloader.classList.add("hide"), 500);
-                    setTimeout(() => preloader.remove(), 1000);
-                    }
-                });
-                }
-            });
-
-            if (loadedCount === links.length) {
-                preloader.remove();
-            }
-        }
-
     </script>
 
 </body>

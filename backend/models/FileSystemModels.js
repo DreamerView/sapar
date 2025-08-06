@@ -343,7 +343,6 @@ class FileSystemModel {
         }
 
         writeStream.end();
-        console.log(chunkDir)
 
         // после сборки удаляем папку __chunks__
         await fs.rmdir(chunkDir).catch(() => { });
@@ -353,8 +352,6 @@ class FileSystemModel {
     async handleChunkUpload({ base64Path, fileName, index, total, buffer }) {
         const { status, finalPath } = this.decodePath(base64Path);
         if (!status) return { status: false, msg: "Недопустимый путь" };
-
-        console.log(finalPath);
 
         const safeName = path.basename(fileName).replace(/[^a-z0-9_.\-]/gi, '');
         const outputFilePath = path.join(finalPath, safeName);
@@ -486,8 +483,6 @@ class FileSystemModel {
 
                 const sourcePath = decoded.finalPath;
 
-                console.log(sourcePath)
-
                 const name = path.basename(sourcePath);
                 const date = await this.formatDateForName();
                 let newName = name;
@@ -504,8 +499,6 @@ class FileSystemModel {
                 } catch (e) {
                     // Всё ок, файла/папки нет
                 }
-
-                console.log(sourcePath,targetPath);
 
                 if (isSelfMove) {
                     await this.copyRecursive(sourcePath, targetPath);

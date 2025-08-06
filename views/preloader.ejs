@@ -1,0 +1,40 @@
+<div id="preloader" style="
+        position:fixed;
+        top:0;
+        left:0;
+        width:100vw;
+        height:100dvh;
+        background:#fff;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        z-index:9999;
+    ">
+    <div class="spinner"></div>
+</div>
+<script type="module">
+    const preloader = document.getElementById("preloader");
+    const links = [...document.querySelectorAll('link[rel="stylesheet"]')];
+    if (!links.length) {
+        preloader.remove();
+    } else {
+        let loadedCount = 0;
+        links.forEach(link => {
+            if (link.sheet) {
+                // Уже загружен
+                loadedCount++;
+            } else {
+                link.addEventListener('load', () => {
+                    loadedCount++;
+                    if (loadedCount === links.length) {
+                        setTimeout(() => preloader.classList.add("hide"), 500);
+                        setTimeout(() => preloader.remove(), 1000);
+                    }
+                });
+            }
+        });
+        if (loadedCount === links.length) {
+            preloader.remove();
+        }
+    }
+</script>
