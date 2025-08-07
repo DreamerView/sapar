@@ -1,0 +1,156 @@
+<div class="w-100 position-fixed d-none" id="global-preview-item" style="height:100dvh;z-index:9999;background-color: rgba(0,0,0, .9);">
+    <div class="d-flex justify-content-between w-100 px-3" style="height:80px">
+        <div class="d-flex align-items-center gap-3" style="max-width: calc(100% - 200px);">
+            <button onclick="closePreviewItem()" 
+                    class="btn btn-dark border-0 rounded-4 rounded-circle p-0" 
+                    style="width:40px; height:40px;flex-shrink:0;">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <h6 id="global-preview-item-name"
+                class="text-white m-0 fw-normal text-truncate"
+                style="overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">
+                File name that is very very very very long and should be truncated with ellipsis
+            </h6>
+        </div>
+
+        <div class="d-flex gap-2 align-items-center">
+            <button class="btn btn-dark border-0 rounded-4 rounded-circle p-0" style="width:40px; height:40px;flex-shrink:0;">
+                <i class="bi bi-printer"></i>
+            </button>
+            <a id="global-preview-item-download" href="#" download
+            class="btn btn-primary border-0 rounded-5 p-0 px-3 d-flex align-items-center gap-2" 
+            style="height:40px;flex-shrink:0;">
+                <i class="bi bi-download"></i>Скачать
+            </a>
+        </div>
+    </div>
+
+
+
+
+    <div class="d-flex position-relative w-100" style="height:calc(100% - 96px)">
+        <div id="global-preview-item-btn-left" class="position-absolute top-50 translate-middle-y d-none" style="left:1rem;z-index: 99;">
+            <button class="btn rounded-circle btn-dark p-0" style="width:48px; height:48px;"><i class="bi bi-arrow-left"></i></button>
+        </div>
+
+        <div class="w-100 h-100 d-flex flex-column align-items-center" id="global-preview-item-render">
+        </div>
+        <div id="global-preview-item-btn-right" class="position-absolute top-50 translate-middle-y d-none" style="right:1rem;z-index: 99;">
+            <button class="btn btn-dark rounded-circle p-0" style="width:48px; height:48px;"><i class="bi bi-arrow-right"></i></button>
+        </div>
+    </div>
+    <div class="d-flex w-100 align-items-center justify-content-center gap-3" style="height:16px">
+        
+    </div>
+</div>
+
+<script>
+    const globalPreviewItem = document.getElementById("global-preview-item");
+    const globalPreviewItemRender = document.getElementById("global-preview-item-render");
+    const globalPreviewItemDownload = document.getElementById("global-preview-item-download");
+    const globalPreviewItemBtnLeft = document.getElementById("global-preview-item-btn-left");
+    const globalPreviewItemBtnRight = document.getElementById("global-preview-item-btn-right");
+    const globalPreviewItemName = document.getElementById("global-preview-item-name");
+
+    const closePreviewItem = () => {
+        globalPreviewItem.classList.add("d-none");
+    }
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closePreviewItem();
+        }
+    });
+
+    const getAllSelectedFiles = () => {
+        const files = document.querySelectorAll('[data-fs="file"]');
+        const newFiles = [];
+        files.forEach(file=>{
+            newFiles.push({name:file.getAttribute("data-fs-selected-name"),type:file.getAttribute("data-fs-selected-type"),path:file.getAttribute("data-fs-selected-path")})
+        })
+
+        return newFiles;
+        
+    }
+
+    let lastValuePreviewForLeft = {};
+    let lastValuePreviewForRight = {};
+    let lastValuePreviewIndex = 0;
+    let lastValuePreviewIndexTotal = 0;
+
+
+    const openPreviewItem = (name,type,src) => {
+        globalPreviewItem.classList.add("d-none");
+        globalPreviewItemRender.textContent = "";
+        const files = getAllSelectedFiles();
+        const currentIndex = files.findIndex(file=>`/media/${file.path}`===src);
+        lastValuePreviewIndex = currentIndex;
+        lastValuePreviewIndexTotal = files.length;
+        
+
+        // Левая кнопка
+        if (currentIndex > 0) {
+            globalPreviewItemBtnLeft.classList.remove("d-none");
+            lastValuePreviewForLeft = files[currentIndex - 1];
+        } else {
+            globalPreviewItemBtnLeft.classList.add("d-none");
+        }
+
+        // Правая кнопка
+        if (currentIndex < files.length - 1) {
+            globalPreviewItemBtnRight.classList.remove("d-none");
+             lastValuePreviewForRight = files[currentIndex + 1];
+        } else {
+            globalPreviewItemBtnRight.classList.add("d-none");
+        }
+        
+        let html;
+        switch(type) {
+            case "image": html = `<img src="${src}" style="width:100%; height:100%; object-fit:contain;">`;break;
+            case "video": 
+                html = `
+                    <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
+                        <video src="${src}" controls style="max-width:100%; max-height:100%; object-fit:contain;" poster="/video-promo.png"></video>
+                    </div>
+                `;
+            break;
+            case "audio": 
+                html = `
+                    <div class="d-flex flex-column align-items-center justify-content-center h-100">
+                        <img src="/audio-promo.png" class="rounded-5" style="max-width:400px;width:100%;height:auto;aspect-ratio:1">
+                        <div class="mt-5"><audio src="${src}" controls></audio></div>
+                    </div>
+                `;
+                break;
+            case "preview": html = `<iframe src="${src}" style="width:100%; height:100%; object-fit:contain;"></iframe>`;break;
+            default: html = `<p>Не поддерживается</p>`;break;
+        }
+        globalPreviewItemName.textContent = name;
+        globalPreviewItemRender.innerHTML = html
+        globalPreviewItemDownload.href = src;
+        globalPreviewItem.classList.remove("d-none");
+    }
+
+    globalPreviewItemBtnLeft.addEventListener("click", () => {
+        if (lastValuePreviewIndex > 0) {
+            openPreviewItem(
+                lastValuePreviewForLeft.name,
+                lastValuePreviewForLeft.type,
+                `/media/${lastValuePreviewForLeft.path}`
+            );
+        }
+    });
+
+    globalPreviewItemBtnRight.addEventListener("click", () => {
+        if (lastValuePreviewIndex < lastValuePreviewIndexTotal - 1) {
+            openPreviewItem(
+                lastValuePreviewForRight.name,
+                lastValuePreviewForRight.type,
+                `/media/${lastValuePreviewForRight.path}`
+            );
+        }
+    });
+
+
+
+</script>

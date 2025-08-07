@@ -35,3 +35,12 @@
         opacity: 1;
     }
 }
+
+button {
+  touch-action: manipulation;
+}
+
+.selected-file-style {
+    background-color: rgba(var(--bs-primary-rgb), 0.75)!important;
+    color: white!important;
+}

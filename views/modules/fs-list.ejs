@@ -2,13 +2,13 @@
     const shortenText = (t, m = 32) => t.length > m ? t.slice(0, m) + '...' : t;
 %>
 
-<div class="d-flex justify-content-between bg-body-secondary p-sm-3 py-3 px-2 w-100 rounded-4 mt-4 d-none gap-3 gap-sm-0 mx-auto" id="select-action-block">
+<div class="d-flex justify-content-between bg-body-secondary py-2 px-3 w-100 rounded-5 mt-4 d-none gap-3 gap-sm-0 mx-auto position-sticky top-0" style="z-index: 99;" id="select-action-block">
     <div class="d-flex align-items-center gap-2">
-        <button id="clearSelectAction" class="btn btn-outline-danger border-0 rounded-4"><i class="bi bi-x-lg"></i></button>
+        <button id="clearSelectAction" class="btn btn-outline-secondary border-0 rounded-4"><i class="bi bi-x-lg"></i></button>
         <p class="m-0">Выбрано: <b id="select-action-list">0</b> элементов</p>
     </div>
     <div class="dropdown">
-        <button class="btn btn-secondary rounded-4" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn btn-outline-secondary border-0 rounded-4" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-three-dots-vertical"></i>
         </button>
         <ul class="dropdown-menu px-1 py-2 rounded-4" data-bs-theme="dark">
@@ -18,19 +18,31 @@
     </div>
 </div>
 
-<div class="row mt-4 mt-sm-0">
+<div class="row mt-sm-0">
     <% list.forEach((render,index)=>{ %>
-    <div class="dropdown col-xl-2 col-lg-3 col-sm-4 col-6 mt-md-4 mt-1 no-select" title="<%- render['name']%>"
-        ondblclick="goTo('?fs=<%- render['path'] %>')" style="cursor: pointer;" data-context-dropdown>
+    <div class="dropdown col-xl-2 col-lg-3 col-sm-4 col-6 mt-4 no-select" title="<%- render['name']%>" 
+        <% if (render.type !== "directory") { %>
+            ondblclick="openPreviewItem('<%- render.name %>','<%- render.icon %>', '/media/<%- render.path %>')"
+        <% } else { %>
+            ondblclick="goTo('?fs=<%- render['path'] %>')"
+        <% } %>
+         style="cursor: pointer;" data-context-dropdown>
         <div data-bs-toggle="dropdown" data-selected-dropdown="<%- index %>" data-fs-dropdown aria-expanded="false" data-fs-selected-name="<%- render.name %>" data-fs-selected-path="<%- render.path %>"
-            class="text-center d-block text-decoration-none text-body hover rounded-4 p-3 scale-hover" data-fs>
+            class="text-center d-block text-decoration-none text-body hover rounded-4 py-3 scale-hover h-100" data-fs="<%- render["type"] %>" data-fs-selected-type="<%- render["icon"] %>">
             <img src="/images/<%- render["type"]==="directory"?"directory":render.icon %>.png?v=1.0.3"
-                style="max-width: 100px;width:100%;margin:0 auto;aspect-ratio:1;" alt="" />
-            <h6 class="mt-4 text-break"><%-shortenText(render['name']) %></h6>
+                style="max-width: 7rem;width:100%;margin:0 auto;aspect-ratio:1;" />
+            <h6 class="m-0 mt-3 text-break"><%-shortenText(render['name']) %></h6>
         </div>
         <ul class="dropdown-menu px-1 py-2 rounded-4" data-bs-theme="dark">
-            <li><a class="dropdown-item d-flex gap-2 align-items-center rounded-4" href="?fs=<%- render['path'] %>"><i
-                        class="bi bi-folder-symlink"></i>Открыть</a></li>
+            <li>
+                <% if (render.type === "directory") { %>
+                    <a class="dropdown-item d-flex gap-2 align-items-center rounded-4" href="?fs=<%- render['path'] %>"><i
+                            class="bi bi-folder-symlink"></i>Открыть</a>
+                <% } else { %>
+                    <button class="dropdown-item d-flex gap-2 align-items-center rounded-4" type="button" onclick="openPreviewItem('<%- render.name %>','<%- render.icon %>', '/media/<%- render.path %>')"><i
+                        class="bi bi-folder-symlink"></i>Открыть</button>
+                <% } %>
+            </li>
             <li><button class="dropdown-item d-flex gap-2 align-items-center rounded-4" onclick="renameFs('<%- render['name'] %>','<%- render['path'] %>')"><i
                         class="bi bi-fonts"></i>Переименовать</button></li>
             <li><button class="dropdown-item d-flex gap-2 align-items-center rounded-4" onclick="startSelectDropdown(event)" data-dropdown-start-select="<%- index %>"><i 
@@ -106,7 +118,7 @@
         event.preventDefault();
         const selectedIndex = event.target.getAttribute("data-dropdown-start-select");
         const elSelected  = document.querySelector(`[data-selected-dropdown="${selectedIndex}"]`);
-        elSelected.classList.add("bg-info");
+        elSelected.classList.add("selected-file-style");
         elSelected.setAttribute("data-fs-active","");
         startSelect = true;
         toggleDropdowns(false);
@@ -115,11 +127,28 @@
         selectActionBlock.classList.remove("d-none");
     }
 
+    const startSelectAllFs = () => {
+        startSelect = true;
+        toggleDropdowns(false);
+        document.querySelectorAll("[data-fs]").forEach(fs=>{
+            fs.classList.add("selected-file-style");
+            fs.setAttribute("data-fs-active","");
+        });
+        selectActionBlock.classList.remove("d-none");
+        const active = document.querySelectorAll("[data-fs-active]");
+        if (active.length === 0) {
+            startSelect = false;
+            toggleDropdowns(true); // включаем обратно dropdown
+            selectActionBlock.classList.add("d-none");
+        }
+        selectActionList.textContent = active.length;
+    }
+
     document.getElementById("clearSelectAction").addEventListener("click",()=>{
         startSelect = false;
         toggleDropdowns(true);
         document.querySelectorAll("[data-fs-active]").forEach(fs=>{
-            fs.classList.remove("bg-info");
+            fs.classList.remove("selected-file-style");
             fs.removeAttribute("data-fs-active");
         });
         selectActionBlock.classList.add("d-none");
@@ -137,7 +166,7 @@
         }
 
         if (startSelect) {
-            el.classList.toggle("bg-info");
+            el.classList.toggle("selected-file-style");
             el.toggleAttribute("data-fs-active");
         }
 

@@ -59,13 +59,14 @@
                     <ul class="dropdown-menu px-1 py-2 rounded-4 mt-2" data-bs-theme="dark">
                             <li><button class="dropdown-item d-flex gap-2 align-items-center rounded-4" type="button" data-bs-toggle="modal" data-bs-target="#createFolderModal"><i class="bi bi-folder-plus"></i>Создать папку</button></li>
                             <li><button class="dropdown-item d-flex gap-2 align-items-center rounded-4" type="button" data-bs-toggle="modal" data-bs-target="#uploadFileModal"><i class="bi bi-upload"></i>Загрузить файл</button></li>
+                            <li><button class="dropdown-item d-flex gap-2 align-items-center rounded-4" type="button" onclick="startSelectAllFs()"><i class="bi bi-check2-square"></i>Выбрать все</button></li>
                     </ul>
                 </div>
                 <% } %>
             </div>
         </div>
         <div class="col-lg-8 col-md-6">
-            <div class="d-flex align-items-center bg-body-secondary rounded-4 py-3 px-4 overflow-x-auto"
+            <div class="d-flex align-items-center bg-body-secondary rounded-5 py-3 px-4 overflow-x-auto"
                 style="min-width: 0;">
                 <nav class="flex-grow-1" style="min-width: 0;">
                     <ol class="breadcrumb flex-nowrap mb-0" style="padding:0; margin:0;">
