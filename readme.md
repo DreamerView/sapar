@@ -22,6 +22,7 @@
 - 📁 View and manage folders via intuitive UI
 - 🔒 Local-only, private and secure
 - ⚡ Fast and lightweight
+- 🌐 Easy access via local IP or hostname (e.g. `http://sapar.local:3000`) with mDNS/Bonjour
 
 ---
 
@@ -45,9 +46,41 @@ Download the latest version from the [Releases](https://github.com/DreamerView/s
 ## 📡 How It Works
 
 1. Launch the app
-2. Your computer starts a local server (e.g. `http://192.168.1.5:3000`)
+2. Your computer starts a local server (e.g. `http://192.168.1.5` or `http://sapar.local` via mDNS/Bonjour)
 3. Connect from any device in the same Wi-Fi network
 4. Browse and download files via browser
+
+---
+
+## 🔄 Comparison with LocalSend
+
+[LocalSend](https://github.com/localsend/localsend) is a great open-source project for cross-platform file sharing.  
+Below is a friendly comparison to help users choose the right tool for their needs.
+
+| ✨ Feature               | **Sapar Mini** 🚀                                          | **LocalSend** 📱 |
+|--------------------------|------------------------------------------------------------|------------------|
+| 📡 Offline-first transfers | ✅ Runs primarily in local/LAN networks                    | ✅ Works over LAN without internet |
+| 💻 Cross-platform         | 🖥 Windows / 🍎 macOS / 🐧 Linux (Electron app)             | 🖥 Windows, 🍎 macOS, 🐧 Linux, 📱 Android, 🍏 iOS |
+| 🎯 Ease of use            | 🌐 Self-contained HTTP server + web UI                     | 🎨 Polished UI, 🔍 auto device discovery, 📂 drag-and-drop |
+| 🔒 Security               | 🛠 (Planned) HTTPS/mDNS, local network settings            | 🔐 TLS encryption with auto-generated certificate each session |
+| 🖥 UI integration         | 💼 Built into a desktop application                        | 📱 Mobile OS share menu integration |
+| ⚙️ Extra capabilities     | 📡 Bonjour/mDNS, fully offline autonomous server           | 🔗 Web link & 📷 QR code access without client |
+| ⚠️ Limitations / constraints | 🌍 Dependent on local network/firewall settings           | 📌 Requires opening port 53317, may have VPN issues |
+| 📜 License                | 📄 MIT                                                     | 📄 Apache-2.0 |
+
+---
+
+### 🚀 When Sapar Mini is a better fit
+- 🖥 When you need a **dedicated offline-first server** on a desktop/laptop.
+- ⚙️ If you require **flexible network setup** (custom ports, Bonjour listing, mDNS).
+- 🎯 If you want **simple installation** without mobile app dependencies.
+
+### 📱 Where LocalSend excels
+- 🌍 **Wider platform support** (including iOS & Android).
+- 🎨 **Intuitive mobile UX** and OS-level share menu integration.
+- 🔐 **End-to-end TLS encryption** with automatic certificate generation.
+- 🆓 **No ads**, fully open source, and very lightweight.
+- 📷 **QR code or direct link** access without installing a client.
 
 ---
 
