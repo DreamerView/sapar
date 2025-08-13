@@ -52,6 +52,14 @@ Download the latest version from the [Releases](https://github.com/DreamerView/s
 
 ---
 
+## 📦 Use Cases
+- 🎓 Share classroom resources in schools without internet  
+- 💼 Stream media in office LAN for presentations  
+- 🏠 Quickly share files with family devices at home
+
+
+---
+
 ## 🔄 Comparison with LocalSend
 
 [LocalSend](https://github.com/localsend/localsend) is a great open-source project for cross-platform file sharing.  
@@ -81,6 +89,14 @@ Below is a friendly comparison to help users choose the right tool for their nee
 - 🔐 **End-to-end TLS encryption** with automatic certificate generation.
 - 🆓 **No ads**, fully open source, and very lightweight.
 - 📷 **QR code or direct link** access without installing a client.
+
+---
+
+## 🖥️ When to Use Sapar Mini
+
+- 📡 You want a dedicated desktop media server without internet  
+- ⚡ You prefer simple setup without installing mobile apps  
+- 🔧 You need flexible network config (port, Bonjour)
 
 ---
 
